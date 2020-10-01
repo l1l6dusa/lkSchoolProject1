@@ -10,7 +10,7 @@ Assets/AssetStoreTools*
 *.pidb.meta
 
 # ===================================== #
-# Visual Studio / MonoDevelop generated #
+# Visual Studio / MonoDevelop / Rider generated #
 # ===================================== #
 ExportedObj/
 *.svd
@@ -22,7 +22,7 @@ ExportedObj/
 *.user
 *.unityproj
 *.booproj
-
+.idea
 # ============ #
 # OS generated #
 # ============ #
