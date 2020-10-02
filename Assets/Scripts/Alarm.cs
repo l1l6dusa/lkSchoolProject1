@@ -9,23 +9,22 @@ public class Alarm : MonoBehaviour
     [SerializeField] private float _alarmVolumeSwingPeriod;
     [Range(0.1f, 1f)][SerializeField] private float _maxVolume;
     [Range(0.1f, 1f)][SerializeField] private float _minVolume;
-    private AudioSource audio;
-    private Coroutine alarm;
-    void Start()
-    {
-        audio = GetComponent<AudioSource>();
-        audio.volume = _maxVolume;
-    }
     
-    void Update() { }
+    private AudioSource _audio;
+    private Coroutine _alarm;
+    private void Start()
+    {
+        _audio = GetComponent<AudioSource>();
+        _audio.volume = _maxVolume;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.TryGetComponent<Thief>(out var thief))
         {
-            alarm = StartCoroutine(ChangeVolumeCoroutine(_alarmVolumeSwingPeriod));
+            _alarm = StartCoroutine(ChangeVolumeCoroutine(_alarmVolumeSwingPeriod));
             
-            audio.Play();
+            _audio.Play();
         }
         
         
@@ -36,9 +35,9 @@ public class Alarm : MonoBehaviour
         
         if (other.TryGetComponent<Thief>(out var thief))
         { 
-            StopCoroutine(alarm);
+            StopCoroutine(_alarm);
             
-            audio.Stop();
+            _audio.Stop();
         }
 
        
@@ -56,12 +55,12 @@ public class Alarm : MonoBehaviour
             {
                 if (timer < time)
                 {
-                    audio.volume = Mathf.Clamp(audio.volume - Time.deltaTime * (_maxVolume - _minVolume), _minVolume,
+                    _audio.volume = Mathf.Clamp(_audio.volume - Time.deltaTime * (_maxVolume - _minVolume), _minVolume,
                         _maxVolume);
                     yield return new WaitForEndOfFrame();
                 }
 
-                if (audio.volume == _minVolume)
+                if (_audio.volume == _minVolume)
                 {
                     isSwingMiddlePassed = true;
                     timer = 0;
@@ -74,12 +73,12 @@ public class Alarm : MonoBehaviour
                 {
                     if (timer < time)
                     {
-                        audio.volume = Mathf.Clamp(audio.volume + Time.deltaTime * (_maxVolume - _minVolume), _minVolume,
+                        _audio.volume = Mathf.Clamp(_audio.volume + Time.deltaTime * (_maxVolume - _minVolume), _minVolume,
                             _maxVolume);
                         yield return new WaitForEndOfFrame();
                     }
 
-                    if (audio.volume == _maxVolume)
+                    if (_audio.volume == _maxVolume)
                     {
                         isSwingMiddlePassed = false;
                         timer = 0;
