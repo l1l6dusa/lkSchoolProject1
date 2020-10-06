@@ -360,6 +360,10 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 930130250153363532, guid: 3a9c7b3b14f548b4a9fd63e09654d79e, type: 3}
+      propertyPath: _minVolume
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1714001023129855764, guid: 3a9c7b3b14f548b4a9fd63e09654d79e, type: 3}
       propertyPath: m_Name
       value: House
