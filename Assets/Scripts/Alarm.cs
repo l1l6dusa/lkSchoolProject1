@@ -3,19 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class Alarm : MonoBehaviour
 {
-
-    [SerializeField] private float _alarmVolumeSwingPeriod;
-    [Range(0.1f, 1f)][SerializeField] private float _maxVolume;
     [Range(0.1f, 1f)][SerializeField] private float _minVolume;
+    [Range(0.1f, 1f)][SerializeField] private float _maxVolume;
+    [SerializeField] private float _alarmVolumeSwingPeriod;
     
     private AudioSource _audio;
     private Coroutine _alarm;
+    
     private void Start()
     {
         _audio = GetComponent<AudioSource>();
-        _audio.volume = _maxVolume;
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -45,46 +47,23 @@ public class Alarm : MonoBehaviour
 
     private IEnumerator ChangeVolumeCoroutine(float time)
     {
-       
+        _audio.volume = _maxVolume;
         var isSwingMiddlePassed = false;
-        float timer = 0;
+
         while (true)
         {
-            timer += Time.deltaTime;
-            if (isSwingMiddlePassed == false)
+            if (_audio.volume == _minVolume)
             {
-                if (timer < time)
-                {
-                    _audio.volume = Mathf.Clamp(_audio.volume - Time.deltaTime * (_maxVolume - _minVolume), _minVolume,
-                        _maxVolume);
-                    yield return new WaitForEndOfFrame();
-                }
-
-                if (_audio.volume == _minVolume)
-                {
-                    isSwingMiddlePassed = true;
-                    timer = 0;
-                }
+                isSwingMiddlePassed = true;
             }
-            else
+            if (_audio.volume == _maxVolume)
             {
-                timer += Time.deltaTime;
-                if (isSwingMiddlePassed == true)
-                {
-                    if (timer < time)
-                    {
-                        _audio.volume = Mathf.Clamp(_audio.volume + Time.deltaTime * (_maxVolume - _minVolume), _minVolume,
-                            _maxVolume);
-                        yield return new WaitForEndOfFrame();
-                    }
-
-                    if (_audio.volume == _maxVolume)
-                    {
-                        isSwingMiddlePassed = false;
-                        timer = 0;
-                    }
-                }
+                isSwingMiddlePassed = false;
             }
+            _audio.volume = Mathf.Clamp(_audio.volume + (isSwingMiddlePassed ? Time.deltaTime : -Time.deltaTime) * (_maxVolume - _minVolume) / time, _minVolume,
+                _maxVolume);
+            yield return new WaitForEndOfFrame();
         }
     }
 }
+
